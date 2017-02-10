@@ -1,8 +1,9 @@
 import {
     SVG_NS
-} from '../settings';
+} from '../settings'
+
 export default class Paddle {
-    constructor(boardHeight, width, height, x, y) {
+    constructor(boardHeight, width, height, x, y, up, down) {
         this.boardHeight = boardHeight;
         this.width = width;
         this.height = height;
@@ -10,24 +11,37 @@ export default class Paddle {
         this.y = y;
         this.speed = 10;
         this.score = 0;
+
+
+        document.addEventListener('keydown', event => {
+            switch (event.keyCode) {
+                case up:
+                    this.up();
+                    break;
+                case down:
+                    this.down();
+                    break;
+            }
+        });
     }
+
+    up() {
+        this.y = Math.max(this.y - this.speed, 0);
+    }
+
+    down() {
+        this.y = Math.min(this.y + this.speed, (this.boardHeight - this.height));
+    }
+
     render(svg) {
 
-        let rect1 = document.createElementNS(SVG_NS, 'rect');
-        rect1.setAttributeNS(null, 'width', 8);
-        rect1.setAttributeNS(null, 'height', 56);
-        rect1.setAttributeNS(null, 'x', 10);
-        rect1.setAttributeNS(null, 'y', 100);
-        rect1.setAttributeNS(null, 'fill', '#fff');
-        svg.appendChild(rect1);
+        let rect = document.createElementNS(SVG_NS, 'rect')
+        rect.setAttributeNS(null, 'width', this.width)
+        rect.setAttributeNS(null, 'height', this.height)
+        rect.setAttributeNS(null, 'x', this.x)
+        rect.setAttributeNS(null, 'y', this.y)
+        rect.setAttributeNS(null, 'fill', 'white')
 
-        let rect2 = document.createElementNS(SVG_NS, 'rect');
-        rect2.setAttributeNS(null, 'width', 8);
-        rect2.setAttributeNS(null, 'height', 56);
-        rect2.setAttributeNS(null, 'x', 494);
-        rect2.setAttributeNS(null, 'y', 100);
-        rect2.setAttributeNS(null, 'fill', '#fff');
-        svg.appendChild(rect2);
-
+        svg.appendChild(rect)
     }
 }
