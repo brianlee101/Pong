@@ -466,15 +466,15 @@
 
 	var Game = function () {
 		function Game(element, width, height) {
+			var _this = this;
+
 			_classCallCheck(this, Game);
 
 			this.element = element;
 			this.width = width;
 			this.height = height;
-
+			this.pause = false;
 			this.gameElement = document.getElementById(this.element);
-
-			this.board = new _Board2.default(this.width, this.height);
 
 			this.boardGap = 10;
 			this.paddleWidth = 8;
@@ -485,19 +485,34 @@
 			this.paddle1 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.boardGap, (this.height - this.paddleHeight) / 2, _settings.KEYS.a, _settings.KEYS.z);
 
 			this.paddle2 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.width - this.boardGap - this.paddleWidth, (this.height - this.paddleHeight) / 2, _settings.KEYS.up, _settings.KEYS.down);
+
 			this.ball = new _Ball2.default(8, this.width, this.height);
+
+			document.addEventListener('keydown', function (event) {
+				switch (event.keyCode) {
+					case _settings.KEYS.spaceBar:
+						_this.pause = !_this.pause;
+						break;
+				}
+			});
 		}
 
 		_createClass(Game, [{
 			key: 'render',
 			value: function render() {
+
+				if (this.pause) {
+					return;
+				}
+
 				this.gameElement.innerHTML = '';
 
 				var svg = document.createElementNS(_settings.SVG_NS, 'svg');
 				svg.setAttributeNS(null, 'width', this.width);
 				svg.setAttributeNS(null, 'height', this.height);
-				svg.setAttributeNS(null, 'viewBox', '0,0 ' + this.width + ' ' + this.height);
+				svg.setAttributeNS(null, 'viewBox', '0 0 ' + this.width + ' ' + this.height);
 				this.gameElement.appendChild(svg);
+
 				this.board.render(svg);
 				this.paddle1.render(svg);
 				this.paddle2.render(svg);
@@ -679,14 +694,38 @@
 	    }
 
 	    _createClass(Ball, [{
+	        key: 'wallCollision',
+	        value: function wallCollision() {
+	            var hitLeft = this.x - this.radius <= 0;
+	            var hitRight = this.x + this.radius >= this.boardWidth;
+	            var hitTop = this.y - this.radius <= 0;
+	            var hitBottom = this.y + this.radius >= this.boardHeight;
+	            if (hitLeft || hitRight) {
+	                this.vx = -this.vx;
+	            } else if (hitTop || hitBottom) {
+	                this.vy = -this.vy;
+	            }
+	        }
+	    }, {
 	        key: 'reset',
 	        value: function reset() {
 	            this.x = this.boardWidth / 2;
 	            this.y = this.boardHeight / 2;
+	            this.vy = 0;
+	            while (this.vy === 0) {
+	                this.vy = Math.floor(Math.random() * 10 - 5);
+	            }
+
+	            this.vx = this.direction * (6 - Math.abs(this.vy));
 	        }
 	    }, {
 	        key: 'render',
 	        value: function render(svg) {
+
+	            this.x += this.vx;
+	            this.y += this.vy;
+	            this.wallCollision();
+
 	            var ball = document.createElementNS(_settings.SVG_NS, 'circle');
 	            ball.setAttributeNS(null, 'cx', this.x);
 	            ball.setAttributeNS(null, 'cy', this.y);
