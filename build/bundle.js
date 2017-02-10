@@ -436,15 +436,27 @@
 
 /***/ },
 /* 9 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _settings = __webpack_require__(10);
+
+	var _Board = __webpack_require__(11);
+
+	var _Board2 = _interopRequireDefault(_Board);
+
+	var _Paddle = __webpack_require__(12);
+
+	var _Paddle2 = _interopRequireDefault(_Paddle);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -456,13 +468,34 @@
 			this.width = width;
 			this.height = height;
 
-			// Other code goes here...
+			this.gameElement = document.getElementById(this.element);
+
+			this.board = new _Board2.default(this.width, this.height);
+
+			this.boardGap = 10;
+			this.paddleWidth = 8;
+			this.paddleHeight = 56;
+
+			this.board = new _Board2.default(this.width, this.height);
+
+			this.rect1 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.boardGap, (this.height - this.paddleHeight) / 2);
+
+			this.rect2 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.width - this.boardGap - this.paddleWidth, (this.height - this.paddleHeight) / 2);
 		}
 
 		_createClass(Game, [{
-			key: "render",
+			key: 'render',
 			value: function render() {
-				// More code goes here...
+				this.gameElement.innerHTML = '';
+
+				var svg = document.createElementNS(_settings.SVG_NS, 'svg');
+				svg.setAttributeNS(null, 'width', this.width);
+				svg.setAttributeNS(null, 'height', this.height);
+				svg.setAttributeNS(null, 'viewBox', '0,0 ' + this.width + ' ' + this.height);
+				this.gameElement.appendChild(svg);
+				this.board.render(svg);
+				this.rect1.render(svg);
+				this.rect2.render(svg);
 			}
 		}]);
 
@@ -470,6 +503,124 @@
 	}();
 
 	exports.default = Game;
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var SVG_NS = exports.SVG_NS = 'http://www.w3.org/2000/svg';
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _settings = __webpack_require__(10);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Board = function () {
+	    function Board(width, height) {
+	        _classCallCheck(this, Board);
+
+	        this.width = width;
+	        this.height = height;
+	    }
+
+	    _createClass(Board, [{
+	        key: 'render',
+	        value: function render(svg) {
+	            var rect = document.createElementNS(_settings.SVG_NS, 'rect');
+	            rect.setAttributeNS(null, 'width', this.width);
+	            rect.setAttributeNS(null, 'height', this.height);
+	            rect.setAttributeNS(null, 'fill', '#353535');
+
+	            var line = document.createElementNS(_settings.SVG_NS, 'line');
+	            line.setAttributeNS(null, 'x1', this.width / 2);
+	            line.setAttributeNS(null, 'x2', this.width / 2);
+	            line.setAttributeNS(null, 'y1', this.height - this.height);
+	            line.setAttributeNS(null, 'y2', this.height);
+	            line.setAttributeNS(null, 'stroke', '#ffffff');
+	            line.setAttributeNS(null, 'stroke-width', '3px');
+	            line.setAttributeNS(null, 'stroke-dasharray', '20, 15');
+
+	            svg.appendChild(rect);
+	            svg.appendChild(line);
+	        }
+	    }]);
+
+	    return Board;
+	}();
+
+	exports.default = Board;
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _settings = __webpack_require__(10);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Paddle = function () {
+	    function Paddle(boardHeight, width, height, x, y) {
+	        _classCallCheck(this, Paddle);
+
+	        this.boardHeight = boardHeight;
+	        this.width = width;
+	        this.height = height;
+	        this.x = x;
+	        this.y = y;
+	        this.speed = 10;
+	        this.score = 0;
+	    }
+
+	    _createClass(Paddle, [{
+	        key: 'render',
+	        value: function render(svg) {
+
+	            var rect1 = document.createElementNS(_settings.SVG_NS, 'rect');
+	            rect1.setAttributeNS(null, 'width', 8);
+	            rect1.setAttributeNS(null, 'height', 56);
+	            rect1.setAttributeNS(null, 'x', 10);
+	            rect1.setAttributeNS(null, 'y', 100);
+	            rect1.setAttributeNS(null, 'fill', '#fff');
+	            svg.appendChild(rect1);
+
+	            var rect2 = document.createElementNS(_settings.SVG_NS, 'rect');
+	            rect2.setAttributeNS(null, 'width', 8);
+	            rect2.setAttributeNS(null, 'height', 56);
+	            rect2.setAttributeNS(null, 'x', 494);
+	            rect2.setAttributeNS(null, 'y', 100);
+	            rect2.setAttributeNS(null, 'fill', '#fff');
+	            svg.appendChild(rect2);
+	        }
+	    }]);
+
+	    return Paddle;
+	}();
+
+	exports.default = Paddle;
 
 /***/ }
 /******/ ]);
