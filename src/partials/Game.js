@@ -5,8 +5,7 @@ import {
 import Board from './Board';
 import Paddle from './Paddle';
 import Ball from './Ball';
-
-
+import Score from './Score';
 
 export default class Game {
 
@@ -44,6 +43,9 @@ export default class Game {
 
 		this.ball = new Ball(8, this.width, this.height);
 
+		this.score1 = new Score(this.width / 2 - 50, 30, 30);
+		this.score2 = new Score(this.width / 2 + 50, 30, 30);
+
 		document.addEventListener('keydown', event => {
 			switch (event.keyCode) {
 				case KEYS.spaceBar:
@@ -67,10 +69,11 @@ export default class Game {
 		this.gameElement.appendChild(svg);
 
 		this.board.render(svg);
+		this.ball.render(svg, this.paddle1, this.paddle2);
 		this.paddle1.render(svg);
 		this.paddle2.render(svg);
-		this.ball.render(svg);
-
+		this.score1.render(svg, this.paddle1.score);
+		this.score2.render(svg, this.paddle2.score);
 
 	}
 }
