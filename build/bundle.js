@@ -479,7 +479,7 @@
 			this.height = height;
 			this.pause = false;
 			this.gameElement = document.getElementById(this.element);
-
+			this.magentaBall = false;
 			this.boardGap = 10;
 			this.paddleWidth = 8;
 			this.paddleHeight = 56;
@@ -491,7 +491,7 @@
 			this.paddle2 = new _Paddle2.default(this.height, this.paddleWidth, this.paddleHeight, this.width - this.boardGap - this.paddleWidth, (this.height - this.paddleHeight) / 2, _settings.KEYS.up, _settings.KEYS.down);
 
 			this.ball = new _Ball2.default(8, this.width, this.height);
-
+			this.magentaBall = new _Ball2.default(8, this.width, this.height);
 			this.score1 = new _Score2.default(this.width / 2 - 50, 30, 30);
 			this.score2 = new _Score2.default(this.width / 2 + 50, 30, 30);
 
@@ -499,6 +499,9 @@
 				switch (event.keyCode) {
 					case _settings.KEYS.spaceBar:
 						_this.pause = !_this.pause;
+						break;
+					case _settings.KEYS.n:
+						_this.magentaBall = !_this.magentaBall;
 						break;
 				}
 			});
@@ -510,6 +513,9 @@
 
 				if (this.pause) {
 					return;
+				}
+				if (this.magentaBall) {
+					this.magentaBall.render(svg, this.paddle1, this.paddle2);
 				}
 
 				this.gameElement.innerHTML = '';
@@ -549,7 +555,8 @@
 	  z: 90,
 	  up: 38,
 	  down: 40,
-	  spaceBar: 32
+	  spaceBar: 32,
+	  n: 78
 	};
 
 /***/ },
@@ -699,6 +706,12 @@
 
 	var _settings = __webpack_require__(10);
 
+	var _Game = __webpack_require__(9);
+
+	var _Game2 = _interopRequireDefault(_Game);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Ball = function () {
@@ -709,6 +722,7 @@
 	        this.boardWidth = boardWidth;
 	        this.boardHeight = boardHeight;
 	        this.direction = 1;
+	        this.ping = new Audio('public/sounds/pong-01.wav');
 
 	        this.reset();
 	    }
@@ -742,6 +756,7 @@
 
 	                if (this.x + this.radius >= leftX && this.x + this.radius <= rightX && this.y >= topY && this.y <= bottomY) {
 	                    this.vx = -this.vx;
+	                    this.ping.play();
 	                }
 	            } else {
 	                var _paddle2 = paddle1.coordinates(paddle1.x, paddle1.y, paddle1.width, paddle1.height);
@@ -754,6 +769,7 @@
 
 	                if (this.x - this.radius >= _leftX && this.x - this.radius <= _rightX && this.y >= _topY && this.y <= _bottomY) {
 	                    this.vx = -this.vx;
+	                    this.ping.play();
 	                }
 	            }
 	        }
@@ -779,7 +795,7 @@
 	        }
 	    }, {
 	        key: 'render',
-	        value: function render(svg, paddle1, paddle2) {
+	        value: function render(svg, paddle1, paddle2, magentaBall) {
 
 	            this.x += this.vx;
 	            this.y += this.vy;
@@ -792,7 +808,16 @@
 	            ball.setAttributeNS(null, 'cx', this.x);
 	            ball.setAttributeNS(null, 'cy', this.y);
 	            ball.setAttributeNS(null, 'fill', 'white');
+
+	            if (magentaBall) {
+	                ball.setAttributeNS(null, 'fill', 'magenta');
+	                ball.setAttributeNS(null, 'r', '20px');
+	                ball.setAttributeNS(null, 'stroke', 'white');
+	                ball.setAttributeNS(null, 'stroke-width', '10px');
+	            }
+
 	            svg.appendChild(ball);
+
 	            var rightGoal = this.x + this.radius >= this.boardWidth;
 	            var leftGoal = this.x - this.radius <= 0;
 	            if (rightGoal) {

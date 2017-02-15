@@ -77,7 +77,7 @@ export default class Ball {
 
     }
 
-    render(svg, paddle1, paddle2) {
+    render(svg, paddle1, paddle2, magentaBall) {
 
         this.x += this.vx;
         this.y += this.vy;
@@ -91,7 +91,16 @@ export default class Ball {
         ball.setAttributeNS(null, 'cx', this.x)
         ball.setAttributeNS(null, 'cy', this.y)
         ball.setAttributeNS(null, 'fill', 'white')
+        if (magentaBall) {
+
+            ball.setAttributeNS(null, 'fill', 'magenta')
+            ball.setAttributeNS(null, 'r', '20px')
+            ball.setAttributeNS(null, 'stroke', 'white')
+            ball.setAttributeNS(null, 'stroke-width', '10px')
+        }
+
         svg.appendChild(ball);
+
         const rightGoal = this.x + this.radius >= this.boardWidth;
         const leftGoal = this.x - this.radius <= 0;
         if (rightGoal) {

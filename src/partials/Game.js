@@ -15,7 +15,7 @@ export default class Game {
 		this.height = height;
 		this.pause = false;
 		this.gameElement = document.getElementById(this.element);
-
+		this.magentaBallExist = false;
 		this.boardGap = 10;
 		this.paddleWidth = 8;
 		this.paddleHeight = 56;
@@ -42,7 +42,7 @@ export default class Game {
 			KEYS.down);
 
 		this.ball = new Ball(8, this.width, this.height);
-
+		this.magentaBall = new Ball(8, this.width, this.height);
 		this.score1 = new Score(this.width / 2 - 50, 30, 30);
 		this.score2 = new Score(this.width / 2 + 50, 30, 30);
 
@@ -51,14 +51,19 @@ export default class Game {
 				case KEYS.spaceBar:
 					this.pause = !this.pause;
 					break;
+				case KEYS.n:
+
+					this.magentaBallExist = true;
+					break;
 			}
 		});
 	}
+
+
 	render() {
 
-		if (this.pause) {
-			return;
-		}
+
+
 
 		this.gameElement.innerHTML = '';
 
@@ -67,6 +72,31 @@ export default class Game {
 		svg.setAttributeNS(null, 'height', this.height)
 		svg.setAttributeNS(null, 'viewBox', `0 0 ${this.width} ${this.height}`);
 		this.gameElement.appendChild(svg);
+		let gameOver
+
+		if (this.paddle1.score === 1 || this.paddle2.score === 1) {
+			let endGame = document.createElementNS(SVG_NS, 'text')
+			endGame.setAttributeNS(null, 'fill', 'yellow');
+			endGame.setAttributeNS(null, 'stroke', 'black')
+			endGame.setAttributeNS(null, 'stroke-width', '5px')
+			endGame.setAttributeNS(null, 'stroke-opacity', .25)
+			endGame.setAttributeNS(null, 'x', 10);
+			endGame.setAttributeNS(null, 'y', 150);
+			endGame.setAttributeNS(null, 'font-size', '50px');
+
+			if (this.paddle2.score === 1) {
+				endGame.innerHTML = 'Player 1 Wins';
+			} else {
+				endGame.innerHTML = 'Player 2 Wins';
+			}
+
+			svg.appendChild(endGame);
+			gameOver = 1
+		}
+		if (this.pause || gameOver === 1) {
+			return;
+		}
+
 
 		this.board.render(svg);
 		this.ball.render(svg, this.paddle1, this.paddle2);
@@ -74,6 +104,8 @@ export default class Game {
 		this.paddle2.render(svg);
 		this.score1.render(svg, this.paddle1.score);
 		this.score2.render(svg, this.paddle2.score);
-
+		if (this.magentaBallExist) {
+			this.magentaBall.render(svg, this.paddle1, this.paddle2, 1);
+		}
 	}
 }
