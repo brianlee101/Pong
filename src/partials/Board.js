@@ -18,7 +18,7 @@ export default class Board {
         line.setAttributeNS(null, 'x2', this.width / 2);
         line.setAttributeNS(null, 'y1', this.height - this.height);
         line.setAttributeNS(null, 'y2', this.height);
-        line.setAttributeNS(null, 'stroke', '#ffffff');
+        line.setAttributeNS(null, 'stroke', 'purple');
         line.setAttributeNS(null, 'stroke-width', '3px');
         line.setAttributeNS(null, 'stroke-dasharray', '20, 15');
 

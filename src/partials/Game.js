@@ -21,11 +21,9 @@ export default class Game {
 		this.paddleHeight = 56;
 
 
-
 		this.board = new Board(this.width, this.height);
-
-
 		this.paddle1 = new Paddle(this.height,
+
 			this.paddleWidth,
 			this.paddleHeight,
 			this.boardGap,
@@ -52,18 +50,13 @@ export default class Game {
 					this.pause = !this.pause;
 					break;
 				case KEYS.n:
-
 					this.magentaBallExist = true;
 					break;
 			}
 		});
 	}
 
-
 	render() {
-
-
-
 
 		this.gameElement.innerHTML = '';
 
@@ -74,20 +67,19 @@ export default class Game {
 		this.gameElement.appendChild(svg);
 		let gameOver
 
-		if (this.paddle1.score === 1 || this.paddle2.score === 1) {
+		if (this.paddle1.score === 7 || this.paddle2.score === 7) {
 			let endGame = document.createElementNS(SVG_NS, 'text')
-			endGame.setAttributeNS(null, 'fill', 'yellow');
-			endGame.setAttributeNS(null, 'stroke', 'black')
+			endGame.setAttributeNS(null, 'fill', 'magenta');
+			endGame.setAttributeNS(null, 'stroke', 'purple')
 			endGame.setAttributeNS(null, 'stroke-width', '5px')
-			endGame.setAttributeNS(null, 'stroke-opacity', .25)
 			endGame.setAttributeNS(null, 'x', 10);
 			endGame.setAttributeNS(null, 'y', 150);
 			endGame.setAttributeNS(null, 'font-size', '50px');
 
 			if (this.paddle2.score === 1) {
-				endGame.innerHTML = 'Player 1 Wins';
-			} else {
 				endGame.innerHTML = 'Player 2 Wins';
+			} else {
+				endGame.innerHTML = 'Player 1 Wins';
 			}
 
 			svg.appendChild(endGame);
@@ -96,7 +88,6 @@ export default class Game {
 		if (this.pause || gameOver === 1) {
 			return;
 		}
-
 
 		this.board.render(svg);
 		this.ball.render(svg, this.paddle1, this.paddle2);

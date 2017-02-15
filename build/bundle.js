@@ -479,7 +479,7 @@
 			this.height = height;
 			this.pause = false;
 			this.gameElement = document.getElementById(this.element);
-			this.magentaBall = false;
+			this.magentaBallExist = false;
 			this.boardGap = 10;
 			this.paddleWidth = 8;
 			this.paddleHeight = 56;
@@ -501,7 +501,8 @@
 						_this.pause = !_this.pause;
 						break;
 					case _settings.KEYS.n:
-						_this.magentaBall = !_this.magentaBall;
+
+						_this.magentaBallExist = true;
 						break;
 				}
 			});
@@ -511,13 +512,6 @@
 			key: 'render',
 			value: function render() {
 
-				if (this.pause) {
-					return;
-				}
-				if (this.magentaBall) {
-					this.magentaBall.render(svg, this.paddle1, this.paddle2);
-				}
-
 				this.gameElement.innerHTML = '';
 
 				var svg = document.createElementNS(_settings.SVG_NS, 'svg');
@@ -525,6 +519,30 @@
 				svg.setAttributeNS(null, 'height', this.height);
 				svg.setAttributeNS(null, 'viewBox', '0 0 ' + this.width + ' ' + this.height);
 				this.gameElement.appendChild(svg);
+				var gameOver = void 0;
+
+				if (this.paddle1.score === 1 || this.paddle2.score === 1) {
+					var endGame = document.createElementNS(_settings.SVG_NS, 'text');
+					endGame.setAttributeNS(null, 'fill', 'yellow');
+					endGame.setAttributeNS(null, 'stroke', 'black');
+					endGame.setAttributeNS(null, 'stroke-width', '5px');
+					endGame.setAttributeNS(null, 'stroke-opacity', .25);
+					endGame.setAttributeNS(null, 'x', 10);
+					endGame.setAttributeNS(null, 'y', 150);
+					endGame.setAttributeNS(null, 'font-size', '50px');
+
+					if (this.paddle2.score === 1) {
+						endGame.innerHTML = 'Player 1 Wins';
+					} else {
+						endGame.innerHTML = 'Player 2 Wins';
+					}
+
+					svg.appendChild(endGame);
+					gameOver = 1;
+				}
+				if (this.pause || gameOver === 1) {
+					return;
+				}
 
 				this.board.render(svg);
 				this.ball.render(svg, this.paddle1, this.paddle2);
@@ -532,6 +550,9 @@
 				this.paddle2.render(svg);
 				this.score1.render(svg, this.paddle1.score);
 				this.score2.render(svg, this.paddle2.score);
+				if (this.magentaBallExist) {
+					this.magentaBall.render(svg, this.paddle1, this.paddle2, 1);
+				}
 			}
 		}]);
 
@@ -706,12 +727,6 @@
 
 	var _settings = __webpack_require__(10);
 
-	var _Game = __webpack_require__(9);
-
-	var _Game2 = _interopRequireDefault(_Game);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Ball = function () {
@@ -808,8 +823,8 @@
 	            ball.setAttributeNS(null, 'cx', this.x);
 	            ball.setAttributeNS(null, 'cy', this.y);
 	            ball.setAttributeNS(null, 'fill', 'white');
-
 	            if (magentaBall) {
+
 	                ball.setAttributeNS(null, 'fill', 'magenta');
 	                ball.setAttributeNS(null, 'r', '20px');
 	                ball.setAttributeNS(null, 'stroke', 'white');

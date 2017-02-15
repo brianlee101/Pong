@@ -7,7 +7,6 @@ export default class Score {
     this.x = x;
     this.y = y;
     this.size = size;
-
   }
   render(svg, scoreCount) {
 
@@ -16,9 +15,8 @@ export default class Score {
     score.setAttributeNS(null, 'y', this.y);
     score.setAttributeNS(null, 'font-size', this.size);
     score.setAttributeNS(null, 'kerning', '10');
-    score.setAttributeNS(null, 'fill', 'white');
+    score.setAttributeNS(null, 'fill', 'magenta ');
     score.textContent = scoreCount;
     svg.appendChild(score);
-
   }
 }

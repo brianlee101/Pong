@@ -10,7 +10,6 @@ export default class Ball {
         this.direction = 1;
         this.ping = new Audio('public/sounds/pong-01.wav');
 
-
         this.reset();
     }
 
@@ -58,7 +57,6 @@ export default class Ball {
         }
     }
 
-
     reset() {
         this.x = this.boardWidth / 2;
         this.y = this.boardHeight / 2;
@@ -85,7 +83,6 @@ export default class Ball {
         this.wallCollision();
         this.paddleCollision(paddle1, paddle2);
 
-
         let ball = document.createElementNS(SVG_NS, 'circle')
         ball.setAttributeNS(null, 'r', this.radius)
         ball.setAttributeNS(null, 'cx', this.x)
@@ -98,7 +95,6 @@ export default class Ball {
             ball.setAttributeNS(null, 'stroke', 'white')
             ball.setAttributeNS(null, 'stroke-width', '10px')
         }
-
         svg.appendChild(ball);
 
         const rightGoal = this.x + this.radius >= this.boardWidth;
